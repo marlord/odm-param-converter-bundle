@@ -1,0 +1,7 @@
+services:
+    best_it_odmparam_converter.converter.odmconverter:
+        class: BestIt\ODMParamConverterBundle\Converter\ODMConverter
+        arguments:
+            - '@best_it.commercetools_odm.manager'
+        tags:
+            - { name: request.param_converter }
