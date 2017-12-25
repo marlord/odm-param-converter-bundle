@@ -5,6 +5,7 @@ namespace BestIt\ODMParamConverterBundle\Converter;
 use BestIt\CommercetoolsODM\DocumentManagerInterface;
 use BestIt\CommercetoolsODM\Mapping\ClassMetadataInterface;
 use Commercetools\Core\Model\Common\JsonObject;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use InvalidArgumentException;
 use LogicException;
 use ReflectionException;
@@ -200,9 +201,17 @@ class ODMConverter implements ParamConverterInterface
      */
     public function supports(ParamConverter $configuration)
     {
-        $class = $configuration->getClass();
-        $meta = $this->documentManager->getClassMetadata($class);
+        $isSupported = false;
 
-        return !(!$meta instanceof ClassMetadataInterface || strlen($meta->getRepository()) <= 0);
+        try {
+            $class = $configuration->getClass();
+            $meta = $this->documentManager->getClassMetadata($class);
+
+            $isSupported = !(!$meta instanceof ClassMetadataInterface || strlen($meta->getRepository()) <= 0);
+        } catch (MappingException $mappingException) {
+            // do nothing.
+        }
+
+        return $isSupported;
     }
 }
