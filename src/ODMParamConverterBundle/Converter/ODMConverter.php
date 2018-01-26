@@ -3,6 +3,7 @@
 namespace BestIt\ODMParamConverterBundle\Converter;
 
 use BestIt\CommercetoolsODM\DocumentManagerInterface;
+use BestIt\CommercetoolsODM\Exception\ResponseException;
 use BestIt\CommercetoolsODM\Mapping\ClassMetadataInterface;
 use Commercetools\Core\Model\Common\JsonObject;
 use Doctrine\Common\Persistence\Mapping\MappingException;
@@ -52,18 +53,27 @@ class ODMConverter implements ParamConverterInterface
         $class = $configuration->getClass();
         $options = $configuration->getOptions();
 
-        // Find by identifier?
-        if (($object = $this->findByIdentifier($request, $options, $class)) === false) {
-            // Find by criteria
-            if (($object = $this->findByCriteria($request, $options, $class)) === false) {
-                if ($configuration->isOptional()) {
-                    $object = null;
-                } else {
-                    throw new LogicException(
-                        'Unable to guess how to get a Commercetools instance from the request information.'
-                    );
+        try
+        {
+            // Find by identifier?
+            if (($object = $this->findByIdentifier($request, $options, $class)) === false) {
+                // Find by criteria
+                if (($object = $this->findByCriteria($request, $options, $class)) === false) {
+                    if ($configuration->isOptional()) {
+                        $object = null;
+                    } else {
+                        throw new LogicException(
+                            'Unable to guess how to get a Commercetools instance from the request information.'
+                        );
+                    }
                 }
             }
+        } catch (ResponseException $exception) {
+            throw new NotFoundHttpException(
+                sprintf('%s object not found.', $class),
+                $exception,
+                $exception->getCode()
+            );
         }
 
         if ($object === null && $configuration->isOptional() === false) {
