@@ -22,7 +22,10 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.0",
-    "symfony/symfony": "^3.1",
+    "symfony/dependency-injection": "^3.1",
+    "symfony/yaml": "^3.1",
+    "symfony/config": "^3.1",
+    "symfony/http-kernel": "^3.1",
     "sensio/framework-extra-bundle": "^3.0.2",
     "bestit/commercetools-odm-bundle": "dev-master"
   },
