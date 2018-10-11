@@ -1,3 +1,7 @@
+## Unreleased
+### Changed
+- \#3 Support symfony flex / changed composer.json @migo315
+
 ## [0.0.2] - 2017-12-26
 ### Fixed
 - Fixed the uncaught mappingexception. @b3nl
